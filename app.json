@@ -3,6 +3,10 @@
     "name": "logit_app",
     "slug": "logit_app",
     "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"],
+    "fonts": {
+      "HelveticaNeue": "./assets/fonts/HelveticaNeue.ttf"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
