@@ -1,6 +1,6 @@
 // ProfileScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 
 // Updated RatingBubble component renders an outlined circle.
 const RatingBubble = ({ rating }: { rating: number }) => {
@@ -123,9 +123,8 @@ export default function ProfileScreen() {
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.headerContainer}>
-        <View style={styles.avatar}>
-          <Text style={{ fontSize: 30 }}>🙂</Text>
-        </View>
+      <Image source={require('../assets/images/profile/selin.png')} style={styles.avatar} />
+
         <Text style={styles.nameText}>Selin B.</Text>
         <View style={styles.statsContainer}>
           <Text style={styles.statsText}>14 friends</Text>
@@ -180,14 +179,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   avatar: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#eee',
+    width: 150,
+    height: 150,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 8,
   },
+  
   nameText: {
     fontSize: 24,
     fontWeight: 'bold',

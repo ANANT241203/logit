@@ -29,12 +29,12 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
 
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Ionicons name="person-circle-outline" size={20} />
+        <Image source={require('../assets/images/profile/gus.png')} style={styles.profileImg} />
           <Text style={styles.headerText}><Text style={styles.bold}>Gus</Text> ranked TV</Text>
           <Text style={styles.timestamp}>2h</Text>
         </View>
         <View style={styles.cardBody}>
-          <Image source={{uri:'https://placehold.co/100x150'}} style={styles.mediaImage}/>
+          <Image source={require('../assets/images/media/bigbang.png')} style={styles.mediaImage}/>
           <View style={styles.mediaContent}>
             <Text style={styles.title}>The Big Bang Theory</Text>
             <Text style={styles.subtitle}>2007 • Sitcom • 12 seasons</Text>
@@ -54,12 +54,12 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
 
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Ionicons name="person-circle-outline" size={20}/>
+        <Image source={require('../assets/images/profile/selin.png')} style={styles.profileImg} />
           <Text style={styles.headerText}><Text style={styles.bold}>Selin</Text> ranked album</Text>
           <Text style={styles.timestamp}>3d</Text>
         </View>
         <View style={styles.cardBody}>
-          <Image source={{uri:'https://placehold.co/100x150'}} style={styles.mediaImage}/>
+          <Image source={require('../assets/images/media/1989.png')} style={styles.mediaImage}/>
           <View style={styles.mediaContent}>
             <Text style={styles.title}>1989</Text>
             <Text style={styles.subtitle}>Taylor Swift • 2014 • Album • 13 songs</Text>
@@ -79,12 +79,13 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
 
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Ionicons name="person-circle-outline" size={20}/>
+        <Image source={require('../assets/images/profile/anant.png')} style={styles.profileImg} />
+
           <Text style={styles.headerText}><Text style={styles.bold}>Anant</Text> ranked book</Text>
           <Text style={styles.timestamp}>1w</Text>
         </View>
         <View style={styles.cardBody}>
-          <Image source={{uri:'https://placehold.co/100x150'}} style={styles.mediaImage}/>
+          <Image source={require('../assets/images/media/grit.png')} style={styles.mediaImage}/>
           <View style={styles.mediaContent}>
             <Text style={styles.title}>Grit</Text>
             <Text style={styles.subtitle}>Angela Duckworth • 2016 • Book • 352 pages</Text>
@@ -130,7 +131,14 @@ const styles = StyleSheet.create({
   wantBtnText:{color:'#fff',fontSize:12},
   ratingCircle:{width:40,height:40,borderRadius:20,borderWidth:2,borderColor:'#6b9b7a',justifyContent:'center',alignItems:'center'},
   rating:{color:'#6b9b7a',fontWeight:'bold'},
-  interaction:{flexDirection:'row',justifyContent:'space-around',marginTop:8,paddingTop:6,borderTopWidth:1,borderColor:'#eee'}
+  interaction:{flexDirection:'row',justifyContent:'space-around',marginTop:8,paddingTop:6,borderTopWidth:1,borderColor:'#eee'},
+  profileImg: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginRight: 6,
+  },
+  
 });
 
 export default FeedScreen;
