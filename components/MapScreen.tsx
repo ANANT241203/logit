@@ -1,28 +1,22 @@
+// MapScreen.tsx
 import React, { useState } from 'react';
-
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
 
-
-const mapWidth = 350;
-const mapHeight = 350;
-
 type NodeType = {
-    [key: string]: { x: number; y: number; color: string };
-  };
-  
-  const nodes: NodeType = {
-    'Anant': { x: 0, y: -120, color: '#F8797E' },
-    'Selin': { x: -100, y: 0, color: '#F8797E' },
-    'Gus': { x: 0, y: 0, color: '#F8797E' },
-    'Grit': { x: -100, y: -70, color: '#FFA600' },
-    'Interstellar': { x: 100, y: -70, color: '#00D62E' },
-    'The Big Bang Theory': { x: 100, y: 50, color: '#00D62E' },
-    '1989': { x: 0, y: 100, color: '#4DDEFF' },
-  };
-  
-  
+  [key: string]: { x: number; y: number; color: string; type: 'friend' | 'media' };
+};
+
+const nodes: NodeType = {
+  'Anant': { x: 0, y: -120, color: '#F8797E', type: 'friend' },
+  'Selin': { x: -100, y: 0, color: '#F8797E', type: 'friend' },
+  'Gus': { x: 0, y: 0, color: '#F8797E', type: 'friend' },
+  'Grit': { x: -100, y: -70, color: '#FFA600', type: 'media' },
+  'Interstellar': { x: 100, y: -70, color: '#00D62E', type: 'media' },
+  'The Big Bang Theory': { x: 100, y: 50, color: '#00D62E', type: 'media' },
+  '1989': { x: 0, y: 100, color: '#4DDEFF', type: 'media' },
+};
 
 const edges = [
   ['Anant', 'Interstellar'],
@@ -36,10 +30,169 @@ const edges = [
 
 export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 
-    const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const renderPopup = () => {
+    if (!selected) return null;
+    const node = nodes[selected];
+
+    if (selected === 'Anant') {
+      return (
+        
+        <View style={[styles.popup, { alignSelf: 'center' }]}>
+
+          <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/profile/anant.png')} style={styles.avatar} />
+          <Text style={styles.popupTitle}>Anant Aggarwal</Text>
+          <Text style={styles.popupMeta}>10 Friends  |  5 Followers</Text>
+          <Text style={styles.popupNote}>Recently watched Breaking Bad.</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Show Profile</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    if (selected === 'Gus') {
+      return (
+        <View style={[styles.popup, { alignSelf: 'center' }]}>
+<TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/profile/gus.png')} style={styles.avatar} />
+          <Text style={styles.popupTitle}>Gus T. Ringley</Text>
+          <Text style={styles.popupMeta}>7 Friends  |  3 Followers</Text>
+          <Text style={styles.popupNote}>Just watched “The Big Bang Theory”... again!</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Show Profile</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    
+    if (selected === 'Selin') {
+      return (
+        <View style={[styles.popup, { alignSelf: 'center' }]}>
+<TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/profile/selin.png')} style={styles.avatar} />
+          <Text style={styles.popupTitle}>Selin Bayraktar</Text>
+          <Text style={styles.popupMeta}>14 Friends  |  14 Followers</Text>
+          <Text style={styles.popupNote}>Recently finished “Grit” and loved it!</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Show Profile</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    
+
+    if (selected === '1989') {
+      return (
+        <View style={[styles.popupBlue, { alignSelf: 'center' }]}>
+
+          <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/media/1989.png')} style={styles.albumArt} />
+          <Text style={styles.popupTitle}>1989</Text>
+          <Text style={styles.subTitle}>Taylor Swift</Text>
+          <Text style={styles.subTitle}>2B+ plays</Text>
+          <Text style={styles.songTitle}>Most Popular Songs</Text>
+          <Text style={styles.songList}>
+            1. Blank Space (2B plays){'\n'}
+            2. Shake It Off (1.5B plays){'\n'}
+            3. Wildest Dreams (1B plays)
+          </Text>
+          <TouchableOpacity style={styles.listenBtn}>
+            <Text style={styles.listenText}>Listen to Album</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (selected === 'Grit') {
+      return (
+        <View style={[styles.popupBlue, { alignSelf: 'center' }]}>
+
+          <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/media/grit.png')} style={styles.albumArt} />
+          <Text style={styles.popupTitle}>Grit</Text>
+          <Text style={styles.subTitle}>Angela Duckworth</Text>
+          <Text style={styles.subTitle}>352 pages</Text>
+          <Text style={styles.songTitle}>Quote</Text>
+          <Text style={styles.songList}>
+            “Enthusiasm is common. Endurance is rare.”
+          </Text>
+          <TouchableOpacity style={styles.listenBtn}>
+            <Text style={styles.listenText}>Read Summary</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    if (selected === 'Interstellar') {
+      return (
+        <View style={[styles.popupBlue, { alignSelf: 'center' }]}>
+
+          <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/media/interstellar.png')} style={styles.albumArt} />
+          <Text style={styles.popupTitle}>Interstellar</Text>
+          <Text style={styles.subTitle}>Christopher Nolan</Text>
+          <Text style={styles.subTitle}>2014 • Sci-Fi • 2h 49m</Text>
+          <Text style={styles.songTitle}>Plot</Text>
+          <Text style={styles.songList}>
+            A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.
+          </Text>
+          <TouchableOpacity style={styles.listenBtn}>
+            <Text style={styles.listenText}>Watch Trailer</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    if (selected === 'The Big Bang Theory') {
+      return (
+        <View style={[styles.popupBlue, { alignSelf: 'center' }]}>
+
+          <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
+  <Text style={{ fontSize: 18, color: '#999' }}>✕</Text>
+</TouchableOpacity>
+
+          <Image source={require('../assets/images/media/bigbang.png')} style={styles.albumArt} />
+          <Text style={styles.popupTitle}>The Big Bang Theory</Text>
+          <Text style={styles.subTitle}>Chuck Lorre, Bill Prady</Text>
+          <Text style={styles.subTitle}>2007–2019 • Sitcom • 12 Seasons</Text>
+          <Text style={styles.songTitle}>Fun Fact</Text>
+          <Text style={styles.songList}>
+            Sheldon’s favorite number is 73: “The best number.”{'\n'}
+            Prime, palindrome, and binary elegance.
+          </Text>
+          <TouchableOpacity style={styles.listenBtn}>
+            <Text style={styles.listenText}>Stream Series</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+        
+    
+
+    return null;
+  };
 
   return (
     <View style={styles.container}>
+      {/* Search bar */}
       <View style={styles.searchBar}>
         <Ionicons name="search" size={18} color="#aaa"/>
         <Text style={styles.searchPlaceholder}>Search Your Map</Text>
@@ -49,6 +202,7 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 
       </View>
 
+      {/* Filters */}
       <View style={styles.filters}>
         <TouchableOpacity style={styles.filterBtn}>
           <Ionicons name="filter" size={16}/><Text style={styles.filterText}>Filter</Text>
@@ -61,57 +215,51 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
         </TouchableOpacity>
       </View>
 
+      {/* Map and nodes */}
       <View style={styles.mapArea}>
         <Svg style={StyleSheet.absoluteFill}>
           {edges.map(([from, to], index) => (
             <Line
-            key={index}
-            x1={nodes[from].x + mapWidth / 2}
-            y1={nodes[from].y + mapHeight / 2}
-            x2={nodes[to].x + mapWidth / 2}
-            y2={nodes[to].y + mapHeight / 2}
-            stroke="#F5A5B8"
-            strokeWidth="3"
-          />
-          
+              key={index}
+              x1={nodes[from].x + 175}
+              y1={nodes[from].y + 175}
+              x2={nodes[to].x + 175}
+              y2={nodes[to].y + 175}
+              stroke="#F5A5B8"
+              strokeWidth="3"
+            />
           ))}
         </Svg>
 
         {Object.entries(nodes).map(([label, node]) => (
+          <TouchableOpacity
+            key={label}
+            onPress={() => setSelected(label)}
+            style={[styles.node, {top: node.y, left: node.x, backgroundColor: node.color}]}
+          >
+            <Text style={styles.nodeText}>{label}</Text>
+          </TouchableOpacity>
+        ))}
+
+<Modal
+  visible={!!selected}
+  transparent
+  animationType="fade"
+  onRequestClose={() => setSelected(null)}
+>
   <TouchableOpacity
-    key={label}
-    style={[styles.node, { top: node.y, left: node.x, backgroundColor: node.color }]}
-    onPress={() => setSelectedNode(label)}
+    activeOpacity={1}
+    onPressOut={() => setSelected(null)}
+    style={{
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.2)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
   >
-    <Text style={styles.nodeText}>{label}</Text>
+    {renderPopup()}
   </TouchableOpacity>
-))}
-
-{selectedNode && (
-  <View style={styles.popup}>
-    {['Anant', 'Selin', 'Gus'].includes(selectedNode) ? (
-      <>
-        <Text style={styles.popupTitle}>{selectedNode}</Text>
-        <Text style={styles.popupText}>Recently watched Breaking Bad.</Text>
-        <TouchableOpacity style={styles.popupButton}>
-          <Text style={{ color: '#fff' }}>Show Profile</Text>
-        </TouchableOpacity>
-      </>
-    ) : (
-      <>
-        <Text style={styles.popupTitle}>{selectedNode}</Text>
-        <Text style={styles.popupText}>Popular content details here.</Text>
-        <TouchableOpacity style={styles.popupButton}>
-          <Text style={{ color: '#fff' }}>View Content</Text>
-        </TouchableOpacity>
-      </>
-    )}
-    <TouchableOpacity onPress={() => setSelectedNode(null)}>
-      <Text style={{ color: 'gray', marginTop: 10 }}>Close</Text>
-    </TouchableOpacity>
-  </View>
-)}
-
+</Modal>
 
       </View>
     </View>
@@ -119,81 +267,63 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex:1,padding:15,backgroundColor:'#fff'
+  container: { flex: 1, padding: 15, backgroundColor: '#fff' },
+  searchBar: {
+    flexDirection: 'row', alignItems: 'center', padding: 8,
+    borderRadius: 20, borderWidth: 1, borderColor: '#ccc', marginBottom: 10
   },
-  searchBar:{
-    flexDirection:'row',alignItems:'center',padding:8,borderRadius:20,borderWidth:1,borderColor:'#ccc',marginBottom:10
+  searchPlaceholder: { flex: 1, marginLeft: 5, color: '#aaa' },
+  listViewBtn: { padding: 5, borderWidth: 1, borderColor: '#ccc', borderRadius: 15 },
+  listViewText: { color: '#888' },
+  filters: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 6 },
+  filterBtn: {
+    flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: 15, borderWidth: 1, borderColor: '#ccc', alignItems: 'center'
   },
-  searchPlaceholder:{flex:1,marginLeft:5,color:'#aaa'},
-  listViewBtn:{
-    padding:5,borderWidth:1,borderColor:'#ccc',borderRadius:15
-  },
-  listViewText:{color:'#888'},
-  filters:{
-    flexDirection:'row',alignItems:'center',marginBottom:10,gap:6
-  },
-  filterBtn:{
-    flexDirection:'row',paddingHorizontal:10,paddingVertical:5,borderRadius:15,borderWidth:1,borderColor:'#ccc',alignItems:'center'
-  },
-  filterText:{marginLeft:4,color:'#555'},
-  locationBtn:{marginLeft:'auto'},
+  filterText: { marginLeft: 4, color: '#555' },
+  locationBtn: { marginLeft: 'auto' },
   mapArea: {
-    flex: 1,
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-    transform: [{ scale: 0.9 }] // adjust scale if necessary
+    flex: 1, position: 'relative', justifyContent: 'center', alignItems: 'center',
+    transform: [{ scale: 0.9 }]
   },
-  
-  node:{
-  position:'absolute',
-  paddingHorizontal:10,
-  paddingVertical:8,
-  borderRadius:12,
-  elevation:3,
-  minWidth:70,
-  alignItems:'center',
-  justifyContent:'center',
-  marginLeft: '50%', 
-  marginTop: '50%', 
-  transform: [{ translateX: -40 }, { translateY: -20 }]
-},
-
-  nodeText:{
-    color:'#fff',fontSize:12,fontWeight:'bold',textAlign:'center'
+  node: {
+    position: 'absolute', paddingHorizontal: 10, paddingVertical: 8,
+    borderRadius: 12, elevation: 3, minWidth: 70, alignItems: 'center',
+    justifyContent: 'center', marginLeft: '50%', marginTop: '50%',
+    transform: [{ translateX: -40 }, { translateY: -20 }]
+  },
+  nodeText: {
+    color: '#fff', fontSize: 12, fontWeight: 'bold', textAlign: 'center'
   },
   popup: {
-    position: 'absolute',
-    top: '40%',
-    left: '10%',
-    right: '10%',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 100,
+    position: 'absolute', top: 120, width: 280, padding: 15,
+    backgroundColor: '#fff', borderRadius: 24, elevation: 6, alignItems: 'center'
   },
-  popupTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 10,
+  popupTitle: { fontSize: 18, fontWeight: 'bold', color: '#f36', marginTop: 5 },
+  popupMeta: { color: '#777', fontSize: 14, marginTop: 5 },
+  popupNote: { fontSize: 14, marginTop: 10, color: '#c44' },
+  button: {
+    backgroundColor: '#f36', paddingVertical: 10, paddingHorizontal: 20,
+    borderRadius: 20, marginTop: 15
   },
-  popupText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 15,
+  buttonText: { color: '#fff', fontWeight: 'bold' },
+  avatar: {
+    width: 60, height: 60, borderRadius: 30, backgroundColor: '#eee',
+    justifyContent: 'center', alignItems: 'center', overflow: 'hidden'
   },
-  popupButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    backgroundColor: '#F8797E',
-    borderRadius: 8,
+  albumArt: {
+    width: 60, height: 60, borderRadius: 8, marginBottom: 8
   },
-  
+  popupBlue: {
+    position: 'absolute', top: 120, width: 280, padding: 15,
+    backgroundColor: '#fff', borderRadius: 24, elevation: 6, alignItems: 'center'
+  },
+  subTitle: { fontSize: 14, color: '#666', marginTop: 4 },
+  songTitle: { fontSize: 14, color: '#1da1f2', fontWeight: 'bold', marginTop: 10 },
+  songList: { fontSize: 13, color: '#555', marginTop: 6, textAlign: 'center' },
+  listenBtn: {
+    backgroundColor: '#4DD0E1', paddingVertical: 10, paddingHorizontal: 20,
+    borderRadius: 20, marginTop: 12
+  },
+  listenText: { color: '#fff', fontWeight: 'bold' }
 });
