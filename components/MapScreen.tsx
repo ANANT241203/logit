@@ -63,7 +63,7 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 </TouchableOpacity>
 
           <Image source={require('../assets/images/profile/gus.png')} style={styles.avatar} />
-          <Text style={styles.popupTitle}>Gus T. Ringley</Text>
+          <Text style={styles.popupTitle}>Gus Liu</Text>
           <Text style={styles.popupMeta}>7 Friends  |  3 Followers</Text>
           <Text style={styles.popupNote}>Just watched “The Big Bang Theory”... again!</Text>
           <TouchableOpacity style={styles.button}>
@@ -81,7 +81,7 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 </TouchableOpacity>
 
           <Image source={require('../assets/images/profile/selin.png')} style={styles.avatar} />
-          <Text style={styles.popupTitle}>Selin Bayraktar</Text>
+          <Text style={styles.popupTitle}>Selin B.</Text>
           <Text style={styles.popupMeta}>14 Friends  |  14 Followers</Text>
           <Text style={styles.popupNote}>Recently finished “Grit” and loved it!</Text>
           <TouchableOpacity style={styles.button}>
