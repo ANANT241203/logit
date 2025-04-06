@@ -135,7 +135,7 @@ export default function AddScreen({ }) {
               style={styles.modalInput}
               value={date}
               onChangeText={setDate}
-              placeholder="Add Dates"
+              placeholder="Add date finished"
               placeholderTextColor="#333"
             />
 
