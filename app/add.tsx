@@ -15,7 +15,7 @@ export default function AddScreen({ }) {
   const [share, setShare] = useState(false);
   const [stars, setStars] = useState(0);
   const [showPicker, setShowPicker] = useState(false);
-const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
 
   const handleSearch = () => {
@@ -144,23 +144,24 @@ const [selectedDate, setSelectedDate] = useState(new Date());
             <Text style={styles.author}>By {by}</Text>
 
             <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.modalInput}>
-  <Text style={{ color: date ? '#000' : '#333' }}>
-    {date || 'Add date finished'}
-  </Text>
-</TouchableOpacity>
-{showPicker && (
-  <DateTimePicker
-    value={selectedDate}
-    mode="date"
-    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-    onChange={(event, selected) => {
-      const currentDate = selected || selectedDate;
-      setShowPicker(false);
-      setSelectedDate(currentDate);
-      setDate(currentDate.toISOString().split('T')[0]);
-    }}
-  />
-)}
+              <Text style={{ color: date ? '#000' : '#333' }}>
+                {date || 'Add date finished'}
+              </Text>
+            </TouchableOpacity>
+            {showPicker && (
+              <DateTimePicker
+                value={selectedDate}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                textColor='black'
+                onChange={(event, selected) => {
+                  const currentDate = selected || selectedDate;
+                  setShowPicker(false);
+                  setSelectedDate(currentDate);
+                  setDate(currentDate.toISOString().split('T')[0]);
+                }}                
+              />
+            )}
 
 
             <TextInput
@@ -176,26 +177,26 @@ const [selectedDate, setSelectedDate] = useState(new Date());
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => handleStars(star)}>
                   <FontAwesome
-  name={stars >= star ? 'star' : 'star-o'}
-  size={24}
-  color="#FFD700"
-/>
+                    name={stars >= star ? 'star' : 'star-o'}
+                    size={24}
+                    color="#FFD700"
+                  />
 
                 </TouchableOpacity>
               ))}
             </View>
 
             <View style={styles.toggleRow}>
-  <Text style={styles.modalLabel}>Share with friends?</Text>
-  <View style={{ transform: [{ translateY: 4 }] }}>
-    <Switch
-      value={share}
-      onValueChange={handleShareToggle}
-      trackColor={{ false: '#ccc', true: '#FF6B6B' }}
-      thumbColor={share ? '#fff' : '#f4f3f4'}
-    />
-  </View>
-</View>
+              <Text style={styles.modalLabel}>Share with friends?</Text>
+              <View style={{ transform: [{ translateY: 4 }] }}>
+                <Switch
+                  value={share}
+                  onValueChange={handleShareToggle}
+                  trackColor={{ false: '#ccc', true: '#FF6B6B' }}
+                  thumbColor={share ? '#fff' : '#f4f3f4'}
+                />
+              </View>
+            </View>
 
 
 
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
   },
-  
+
   modalLabel: {
     fontSize: 16,
     fontWeight: '500',
@@ -333,28 +334,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 30,
     borderRadius: 10,
-    alignSelf: 'center',          
+    alignSelf: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
   },
-  
-  
-title: {
-  fontSize: 24,
-  fontWeight: '700',
-  color: '#333',
-  marginBottom: 5,
-},
 
-author: {
-  fontSize: 16,
-  fontWeight: '500',
-  color: '#666',
-  marginBottom: 20,
-},
+
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 5,
+  },
+
+  author: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#666',
+    marginBottom: 20,
+  },
   toggleRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -365,11 +366,9 @@ author: {
     flexDirection: 'row',
     marginBottom: 20,
   },
-  
+
   buttonRow: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // width: '80%',
     marginLeft: 35,
   },
   button: {
