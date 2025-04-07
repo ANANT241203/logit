@@ -201,6 +201,7 @@ export default function AddScreen({ }) {
 
 
 
+
             {/* Proceed and Rank Later Buttons */}
             <View style={styles.buttonRow}>
               <TouchableOpacity style={styles.button} onPress={handleProceed}>
@@ -283,7 +284,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
   },
-
   modalLabel: {
     fontSize: 16,
     fontWeight: '500',
@@ -341,20 +341,18 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-
-
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: '#333',
     marginBottom: 5,
   },
-
   author: {
     fontSize: 16,
     fontWeight: '500',
     color: '#666',
     marginBottom: 20,
+
   },
   toggleRow: {
     flexDirection: 'row',
@@ -366,8 +364,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 20,
   },
-
-  buttonRow: {
+buttonRow: {
     flexDirection: 'row',
     marginLeft: 35,
   },
