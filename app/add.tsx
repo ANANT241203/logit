@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Switch } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Switch, Platform } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 export default function AddScreen({ }) {
-  // States for the form
   const [searchText, setSearchText] = useState('');
   const [title, setTitle] = useState('');
   const [by, setBy] = useState('');
   const [type, setType] = useState('');
-  //  const [isSearch, setSearch] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState('');
   const [review, setReview] = useState('');
   const [share, setShare] = useState(false);
   const [stars, setStars] = useState(0);
+  const [showPicker, setShowPicker] = useState(false);
+const [selectedDate, setSelectedDate] = useState(new Date());
 
 
-  // Handler for the search input
   const handleSearch = () => {
     console.log('Search for:', searchText);
-    // Implement search functionality here
   };
 
   const handleDone = () => {
@@ -27,23 +27,35 @@ export default function AddScreen({ }) {
     setModalVisible(true);
   };
 
-  const handleShareToggle = () => setShare(!share);
-
-  const handleStars = (star) => {
-    setStars(star);
+  const resetForm = () => {
+    setSearchText('');
+    setTitle('');
+    setBy('');
+    setType('');
+    setDate('');
+    setReview('');
+    setShare(false);
+    setStars(0);
   };
 
   const handleProceed = () => {
-    // Handle proceed to ranking logic
     console.log('Proceeding to ranking...');
     setModalVisible(false);
+    resetForm();
   };
 
   const handleRankLater = () => {
-    // Handle rank later logic
     console.log('Rank later...');
     setModalVisible(false);
+    resetForm();
   };
+
+  const handleStars = (star: React.SetStateAction<number>) => {
+    setStars(star);
+  };
+
+  const handleShareToggle = () => setShare(!share);
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -131,13 +143,25 @@ export default function AddScreen({ }) {
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.author}>By {by}</Text>
 
-            <TextInput
-              style={styles.modalInput}
-              value={date}
-              onChangeText={setDate}
-              placeholder="Add date finished"
-              placeholderTextColor="#333"
-            />
+            <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.modalInput}>
+  <Text style={{ color: date ? '#000' : '#333' }}>
+    {date || 'Add date finished'}
+  </Text>
+</TouchableOpacity>
+{showPicker && (
+  <DateTimePicker
+    value={selectedDate}
+    mode="date"
+    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+    onChange={(event, selected) => {
+      const currentDate = selected || selectedDate;
+      setShowPicker(false);
+      setSelectedDate(currentDate);
+      setDate(currentDate.toISOString().split('T')[0]);
+    }}
+  />
+)}
+
 
             <TextInput
               style={styles.modalInput}
@@ -152,25 +176,34 @@ export default function AddScreen({ }) {
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => handleStars(star)}>
                   <FontAwesome
-                    name={stars >= star ? 'star' : 'star-o'}
-                    size={24}
-                    color="#9898989"
-                  />
+  name={stars >= star ? 'star' : 'star-o'}
+  size={24}
+  color="#FFD700"
+/>
+
                 </TouchableOpacity>
               ))}
             </View>
 
             <View style={styles.toggleRow}>
-              <Text style={styles.modalLabel}>Share with friends?</Text>
-              <Switch value={share} onValueChange={handleShareToggle} trackColor={{ false: '#898989', true: '#81b0ff' }}/>
-            </View>
+  <Text style={styles.modalLabel}>Share with friends?</Text>
+  <View style={{ transform: [{ translateY: 4 }] }}>
+    <Switch
+      value={share}
+      onValueChange={handleShareToggle}
+      trackColor={{ false: '#ccc', true: '#FF6B6B' }}
+      thumbColor={share ? '#fff' : '#f4f3f4'}
+    />
+  </View>
+</View>
+
 
 
 
             {/* Proceed and Rank Later Buttons */}
             <View style={styles.buttonRow}>
               <TouchableOpacity style={styles.button} onPress={handleProceed}>
-                <Text style={styles.buttonText}>Proceed to Ranking</Text>
+                <Text style={styles.buttonText}>Rank Now</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={handleRankLater}>
                 <Text style={styles.buttonText}>Rank Later</Text>
@@ -206,12 +239,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     width: '15%', // Adjust this to control the width of the label
   },
-  modalLabel: {
-    fontSize: 16,
-    fontWeight: '400',
-    width: '45%', // Adjust this to control the width of the label
-    paddingBottom: 10
-  },
   buttonText: {
     color: '#fff',
     fontSize: 16,
@@ -225,11 +252,11 @@ const styles = StyleSheet.create({
   bubbleButton: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#eee',
+    backgroundColor: '#f0f0f0',
     borderRadius: 20,
   },
   selectedButton: {
-    backgroundColor: '#898989',
+    backgroundColor: '#FF6B6B',
   },
   bubbleText: {
     color: '#333',
@@ -248,22 +275,30 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   modalInput: {
-    width: '85%', // Adjust to fit the input next to the label
+    width: '100%',
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 20,
   },
+  
+  modalLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 8,
+  },
   doneButton: {
-    backgroundColor: '#eee',
+    backgroundColor: '#FF6B6B',
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 5,
     marginTop: 20,
   },
   doneButtonText: {
-    color: '#333',
+    color: '#fff',
     fontSize: 16,
   },
   mapViewBtn: {
@@ -282,7 +317,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#FF6B6B',
     marginBottom: 20,
     marginTop: 50,
     width: '100%'
@@ -294,37 +329,51 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '80%',
+    width: '85%',
     backgroundColor: '#fff',
     padding: 30,
     borderRadius: 10,
-    alignItems: 'center',
+    alignSelf: 'center',          
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  author: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
+  
+  
+title: {
+  fontSize: 24,
+  fontWeight: '700',
+  color: '#333',
+  marginBottom: 5,
+},
+
+author: {
+  fontSize: 16,
+  fontWeight: '500',
+  color: '#666',
+  marginBottom: 20,
+},
   toggleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 30,
+    gap: 12,
   },
   starsRow: {
     flexDirection: 'row',
     marginBottom: 20,
   },
+  
   buttonRow: {
     flexDirection: 'row',
     // justifyContent: 'space-between',
     // width: '80%',
-    marginTop: 15,
+    marginLeft: 35,
   },
   button: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#4DD0E1',
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
