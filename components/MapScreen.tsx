@@ -15,7 +15,7 @@ type NodeType = {
 
 const nodes: NodeType = {
   'Anant': { x: 0, y: -120, color: '#F8797E', type: 'friend' },
-  'Selin': { x: -100, y: 0, color: '#F8797E', type: 'friend' },
+  'You': { x: -100, y: 0, color: '#F8797E', type: 'friend' },
   'Gus': { x: 0, y: 0, color: '#F8797E', type: 'friend' },
   'Grit': { x: -100, y: -70, color: '#FFA600', type: 'media' },
   'Interstellar': { x: 100, y: -70, color: '#00D62E', type: 'media' },
@@ -25,9 +25,9 @@ const nodes: NodeType = {
 
 const edges = [
   ['Anant', 'Interstellar'],
-  ['Selin', 'Grit'],
+  ['You', 'Grit'],
   ['Gus', 'The Big Bang Theory'],
-  ['Selin', '1989'],
+  ['You', '1989'],
   ['Gus', '1989'],
   ['Anant', 'Grit'],
   ['Gus', 'Grit'],
@@ -113,7 +113,7 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
       );
     }
     
-    if (selected === 'Selin') {
+    if (selected === 'You') {
       return (
         <View style={[styles.popup, { alignSelf: 'center' }]}>
 <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>

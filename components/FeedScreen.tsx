@@ -55,7 +55,7 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
         <Image source={require('../assets/images/profile/selin.png')} style={styles.profileImg} />
-          <Text style={styles.headerText}><Text style={styles.bold}>Selin</Text> ranked album</Text>
+          <Text style={styles.headerText}><Text style={styles.bold}>You</Text> ranked album</Text>
           <Text style={styles.timestamp}>3d</Text>
         </View>
         <View style={styles.cardBody}>
@@ -63,10 +63,7 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
           <View style={styles.mediaContent}>
             <Text style={styles.title}>1989</Text>
             <Text style={styles.subtitle}>Taylor Swift • 2014 • Album • 13 songs</Text>
-            <Text style={styles.notes}>Notes: "A slick pop pivot loaded with catchy hooks."</Text>
-            <TouchableOpacity style={styles.wantBtn}>
-              <Text style={styles.wantBtnText}>Want to Listen</Text>
-            </TouchableOpacity>
+            <Text style={styles.notes}>Notes: "meh"</Text>
           </View>
           <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>5.3</Text></View>
         </View>
@@ -90,8 +87,31 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
             <Text style={styles.title}>Grit</Text>
             <Text style={styles.subtitle}>Angela Duckworth • 2016 • Book • 352 pages</Text>
             <Text style={styles.notes}>Notes: "An uplifting premise that sometimes feels repetitive."</Text>
+          </View>
+          <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>2.9</Text></View>
+        </View>
+        <View style={styles.interaction}>
+          <Ionicons name="heart-outline" size={18}/><Text>0</Text>
+          <Ionicons name="chatbubble-outline" size={18}/><Text>0</Text>
+          <Ionicons name="send-outline" size={18}/>
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+        <Image source={require('../assets/images/profile/anant.png')} style={styles.profileImg} />
+
+          <Text style={styles.headerText}><Text style={styles.bold}>Anant</Text> ranked movie</Text>
+          <Text style={styles.timestamp}>1w</Text>
+        </View>
+        <View style={styles.cardBody}>
+          <Image source={require('../assets/images/media/interstellar.png')} style={styles.mediaImage}/>
+          <View style={styles.mediaContent}>
+            <Text style={styles.title}>Interstellar</Text>
+            <Text style={styles.subtitle}>Christopher Nolan • 2014 • Sci-Fi • 2h 49m</Text>
+            <Text style={styles.notes}>Notes: "Awesome movie! Loved Matthew MccCounaughey in this"</Text>
             <TouchableOpacity style={styles.wantBtn}>
-              <Text style={styles.wantBtnText}>Want to Read</Text>
+              <Text style={styles.wantBtnText}>Want to Watch</Text>
             </TouchableOpacity>
           </View>
           <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>2.9</Text></View>
@@ -99,6 +119,52 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
         <View style={styles.interaction}>
           <Ionicons name="heart-outline" size={18}/><Text>0</Text>
           <Ionicons name="chatbubble-outline" size={18}/><Text>0</Text>
+          <Ionicons name="send-outline" size={18}/>
+        </View>
+      </View>
+
+
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+        <Image source={require('../assets/images/profile/selin.png')} style={styles.profileImg} />
+          <Text style={styles.headerText}><Text style={styles.bold}>You</Text> ranked book</Text>
+          <Text style={styles.timestamp}>2w</Text>
+        </View>
+        <View style={styles.cardBody}>
+          <Image source={require('../assets/images/media/grit.png')} style={styles.mediaImage}/>
+          <View style={styles.mediaContent}>
+            <Text style={styles.title}>Grit</Text>
+            <Text style={styles.subtitle}>Angela Duckworth • 2016 • Book • 352 pages</Text>
+            <Text style={styles.notes}>Notes: "I got bored, couldn't finish"</Text>
+
+          </View>
+          <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>1.5</Text></View>
+        </View>
+        <View style={styles.interaction}>
+          <FontAwesome name="heart" color="#F8797E" size={18}/><Text>2</Text>
+          <Ionicons name="chatbubble-outline" size={18}/><Text>1</Text>
+          <Ionicons name="send-outline" size={18}/>
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+        <Image source={require('../assets/images/profile/gus.png')} style={styles.profileImg} />
+          <Text style={styles.headerText}><Text style={styles.bold}>Gus</Text> ranked album</Text>
+          <Text style={styles.timestamp}>2w</Text>
+        </View>
+        <View style={styles.cardBody}>
+          <Image source={require('../assets/images/media/1989.png')} style={styles.mediaImage}/>
+          <View style={styles.mediaContent}>
+            <Text style={styles.title}>1989</Text>
+            <Text style={styles.subtitle}>Taylor Swift • 2014 • Album • 13 songs</Text>
+            <Text style={styles.notes}>Notes: "So danceable! Loving Taylor these days"</Text>
+          </View>
+          <View style={styles.ratingCircle}><Text style={styles.rating}>7.6</Text></View>
+        </View>
+        <View style={styles.interaction}>
+          <Ionicons name="heart-outline" size={18}/><Text>1</Text>
+          <Ionicons name="chatbubble-outline" size={18}/><Text>3</Text>
           <Ionicons name="send-outline" size={18}/>
         </View>
       </View>
