@@ -3,6 +3,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
+import profileIcon from '../assets/icons/profile_icon.png';
+import mediaIcon from '../assets/icons/media_icon.png';
+import bookIcon from '../assets/icons/book_icon.png';
+import musicIcon from '../assets/icons/msuic_icon.png';
+
 
 type NodeType = {
   [key: string]: { x: number; y: number; color: string; type: 'friend' | 'media' };
@@ -27,6 +32,41 @@ const edges = [
   ['Anant', 'Grit'],
   ['Gus', 'Grit'],
 ];
+
+const FriendNode = ({ label, onPress }: { label: string; onPress: () => void }) => (
+  <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: nodes[label].y, left: nodes[label].x }]}>
+    <Image source={profileIcon} style={styles.iconImage} />
+    <Text style={styles.friendNodeText}>{label}</Text>
+  </TouchableOpacity>
+);
+
+
+
+const MediaNode = ({ label, onPress }: { label: string; onPress: () => void }) => {
+  let icon = mediaIcon;
+  if (label === 'Grit') icon = bookIcon;
+  if (label === '1989') icon = musicIcon;
+
+  const isMovieOrShow = label === 'The Big Bang Theory' || label === 'Interstellar';
+  const isDisk = label === '1989';
+
+  return (
+    <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: nodes[label].y, left: nodes[label].x }]}>
+      <Image
+        source={icon}
+        style={[
+          styles.iconImage,
+          isMovieOrShow ? { width: 80, height: 80 } : null,
+          isDisk ? { width: 80, height: 80 } : null 
+        ]}
+      />
+      <Text style={styles.nodeText}>{label}</Text>
+    </TouchableOpacity>
+  );
+};
+
+
+
 
 export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 
@@ -231,15 +271,15 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
           ))}
         </Svg>
 
-        {Object.entries(nodes).map(([label, node]) => (
-          <TouchableOpacity
-            key={label}
-            onPress={() => setSelected(label)}
-            style={[styles.node, {top: node.y, left: node.x, backgroundColor: node.color}]}
-          >
-            <Text style={styles.nodeText}>{label}</Text>
-          </TouchableOpacity>
-        ))}
+        {Object.entries(nodes).map(([label, node]) =>
+  node.type === 'friend' ? (
+    <FriendNode key={label} label={label} onPress={() => setSelected(label)} />
+  ) : (
+    <MediaNode key={label} label={label} onPress={() => setSelected(label)} />
+  )
+)}
+
+
 
 <Modal
   visible={!!selected}
@@ -267,6 +307,34 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 }
 
 const styles = StyleSheet.create({
+  friendNodeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginTop: -30,
+    textAlign: 'center',
+  },  
+  nodeWrapper: {
+  position: 'absolute',
+  marginLeft: '50%',
+  marginTop: '50%',
+  transform: [{ translateX: -40 }, { translateY: -40 }],
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+iconImage: {
+  width: 60,
+  height: 60,
+  resizeMode: 'contain',
+},
+nodeText: {
+  color: '#fff',
+  fontSize: 11,
+  fontWeight: 'bold',
+  position: 'absolute',
+  textAlign: 'center',
+},
+
   container: { flex: 1, padding: 15, backgroundColor: '#fff' },
   searchBar: {
     flexDirection: 'row', alignItems: 'center', padding: 8,
@@ -283,17 +351,17 @@ const styles = StyleSheet.create({
   filterText: { marginLeft: 4, color: '#555' },
   locationBtn: { marginLeft: 'auto' },
   mapArea: {
-    flex: 1, position: 'relative', justifyContent: 'center', alignItems: 'center',
-    transform: [{ scale: 0.9 }]
-  },
+    flex: 1,
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ scale: 1.2 }, { translateY: 100 }]
+  }  ,
   node: {
     position: 'absolute', paddingHorizontal: 10, paddingVertical: 8,
     borderRadius: 12, elevation: 3, minWidth: 70, alignItems: 'center',
     justifyContent: 'center', marginLeft: '50%', marginTop: '50%',
     transform: [{ translateX: -40 }, { translateY: -20 }]
-  },
-  nodeText: {
-    color: '#fff', fontSize: 12, fontWeight: 'bold', textAlign: 'center'
   },
   popup: {
     position: 'absolute', top: 120, width: 280, padding: 15,
@@ -325,5 +393,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4DD0E1', paddingVertical: 10, paddingHorizontal: 20,
     borderRadius: 20, marginTop: 12
   },
-  listenText: { color: '#fff', fontWeight: 'bold' }
+  listenText: { color: '#fff', fontWeight: 'bold' },
+  
 });
