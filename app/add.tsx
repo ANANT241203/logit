@@ -44,12 +44,6 @@ export default function AddScreen({ }) {
     resetForm();
   };
 
-  const handleRankLater = () => {
-    console.log('Rank later...');
-    setModalVisible(false);
-    resetForm();
-  };
-
   const handleStars = (star: React.SetStateAction<number>) => {
     setStars(star);
   };
@@ -65,8 +59,8 @@ export default function AddScreen({ }) {
         <TextInput
           placeholder="Find Title"
           value={searchText}
-          onChangeText={setSearchText} // Update search text when typed
-          onSubmitEditing={handleSearch} // Trigger search when the user presses "Enter"
+          onChangeText={setSearchText}
+          onSubmitEditing={handleSearch}
           placeholderTextColor="#333"
         />
         <TouchableOpacity style={styles.mapViewBtn} onPress={handleSearch}>
@@ -75,7 +69,6 @@ export default function AddScreen({ }) {
       </View>
 
 
-      {/* Bubble Buttons for Type Selection */}
       <View style={styles.buttonContainer}>
         {['Movie', 'Book', 'TV Show', 'Album'].map((item) => (
           <TouchableOpacity
@@ -89,11 +82,10 @@ export default function AddScreen({ }) {
       </View>
 
 
-      {/* Add Your Own Section */}
+      {/* Add your own section */}
       <Text style={styles.sectionTitle}>Add Your Own</Text>
 
 
-      {/* Title Label and Input */}
       <View style={styles.row}>
         <Text style={styles.label}>Title:</Text>
         <TextInput
@@ -104,7 +96,6 @@ export default function AddScreen({ }) {
       </View>
 
 
-      {/* "By" Label and Input */}
       <View style={styles.row}>
         <Text style={styles.label}>By:</Text>
         <TextInput
@@ -115,7 +106,6 @@ export default function AddScreen({ }) {
       </View>
 
 
-      {/* Type Selection */}
       <View style={styles.row}>
         <Text style={styles.label}>Type:</Text>
         <TextInput
@@ -125,13 +115,11 @@ export default function AddScreen({ }) {
         />
       </View>
 
-
-      {/* Done Button */}
       <TouchableOpacity onPress={handleDone} style={styles.doneButton}>
         <Text style={styles.doneButtonText}>Done</Text>
       </TouchableOpacity>
 
-      {/* Modal for Additional Details */}
+      {/* Popup to add review */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -140,6 +128,17 @@ export default function AddScreen({ }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+                resetForm();
+              }}
+              style={styles.closeButton}
+            >
+              <Text>X</Text>
+            </TouchableOpacity>
+
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.author}>By {by}</Text>
 
@@ -159,7 +158,7 @@ export default function AddScreen({ }) {
                   setShowPicker(false);
                   setSelectedDate(currentDate);
                   setDate(currentDate.toISOString().split('T')[0]);
-                }}                
+                }}
               />
             )}
 
@@ -170,6 +169,7 @@ export default function AddScreen({ }) {
               onChangeText={setReview}
               placeholder="Add a review"
               placeholderTextColor="#333"
+              multiline={true}
             />
 
             <Text style={styles.modalLabel}>Rate this {type}</Text>
@@ -198,17 +198,9 @@ export default function AddScreen({ }) {
               </View>
             </View>
 
-
-
-
-
-            {/* Proceed and Rank Later Buttons */}
             <View style={styles.buttonRow}>
               <TouchableOpacity style={styles.button} onPress={handleProceed}>
                 <Text style={styles.buttonText}>Rank Now</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={handleRankLater}>
-                <Text style={styles.buttonText}>Rank Later</Text>
               </TouchableOpacity>
             </View>
 
@@ -239,7 +231,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '500',
-    width: '15%', // Adjust this to control the width of the label
+    width: '15%',
   },
   buttonText: {
     color: '#fff',
@@ -270,7 +262,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   input: {
-    width: '85%', // Adjust to fit the input next to the label
+    width: '85%',
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
@@ -364,9 +356,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 20,
   },
-buttonRow: {
+  buttonRow: {
+    justifyContent: 'center',
     flexDirection: 'row',
-    marginLeft: 35,
   },
   button: {
     backgroundColor: '#4DD0E1',
@@ -374,5 +366,15 @@ buttonRow: {
     paddingHorizontal: 10,
     borderRadius: 5,
     margin: 5,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
   },
 });
