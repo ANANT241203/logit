@@ -1,57 +1,33 @@
 // MapScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Image, PanResponder, Animated } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
 import profileIcon from '../assets/icons/profile_icon.png';
 import mediaIcon from '../assets/icons/media_icon.png';
 import bookIcon from '../assets/icons/book_icon.png';
 import musicIcon from '../assets/icons/msuic_icon.png';
+import { useMap } from './MapContext';
 
 
-type NodeType = {
-  [key: string]: { x: number; y: number; color: string; type: 'friend' | 'media' };
-};
-
-const nodes: NodeType = {
-  'Anant': { x: 0, y: -120, color: '#F8797E', type: 'friend' },
-  'You': { x: -100, y: 0, color: '#F8797E', type: 'friend' },
-  'Gus': { x: 0, y: 0, color: '#F8797E', type: 'friend' },
-  'Grit': { x: -100, y: -70, color: '#FFA600', type: 'media' },
-  'Interstellar': { x: 100, y: -70, color: '#00D62E', type: 'media' },
-  'The Big Bang Theory': { x: 100, y: 50, color: '#00D62E', type: 'media' },
-  '1989': { x: 0, y: 100, color: '#4DDEFF', type: 'media' },
-};
-
-const edges = [
-  ['Anant', 'Interstellar'],
-  ['You', 'Grit'],
-  ['Gus', 'The Big Bang Theory'],
-  ['You', '1989'],
-  ['Gus', '1989'],
-  ['Anant', 'Grit'],
-  ['Gus', 'Grit'],
-];
-
-const FriendNode = ({ label, onPress }: { label: string; onPress: () => void }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: nodes[label].y, left: nodes[label].x }]}>
+const FriendNode = ({ label, onPress, node }: { label: string; onPress: () => void; node: any }) => (
+  <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: node.y, left: node.x }]}> 
     <Image source={profileIcon} style={styles.iconImage} />
     <Text style={styles.friendNodeText}>{label}</Text>
   </TouchableOpacity>
 );
 
-
-
-const MediaNode = ({ label, onPress }: { label: string; onPress: () => void }) => {
+const MediaNode = ({ label, onPress, node }: { label: string; onPress: () => void; node: any }) => {
   let icon = mediaIcon;
-  if (label === 'Grit') icon = bookIcon;
-  if (label === '1989') icon = musicIcon;
-
-  const isMovieOrShow = label === 'The Big Bang Theory' || label === 'Interstellar';
-  const isDisk = label === '1989';
-
+  // Use iconType for new nodes, fallback to label for old nodes
+  if (node.iconType === 'book') icon = bookIcon;
+  else if (node.iconType === 'music') icon = musicIcon;
+  else if (label === 'Grit') icon = bookIcon;
+  else if (label === '1989') icon = musicIcon;
+  const isMovieOrShow = node.iconType === 'media' || label === 'The Big Bang Theory' || label === 'Interstellar';
+  const isDisk = node.iconType === 'music' || label === '1989';
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: nodes[label].y, left: nodes[label].x }]}>
+    <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: node.y, left: node.x }]}> 
       <Image
         source={icon}
         style={[
@@ -65,12 +41,29 @@ const MediaNode = ({ label, onPress }: { label: string; onPress: () => void }) =
   );
 };
 
-
-
-
 export default function MapScreen({ onToggle }: { onToggle: () => void }) {
-
+  const { nodes, edges } = useMap();
   const [selected, setSelected] = useState<string | null>(null);
+  const pan = React.useRef(new Animated.ValueXY({ x: -180, y: 0 })).current;
+
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        // Only allow pan if not pressing a node (nodes are above mapArea)
+        return gestureState.numberActiveTouches === 1 && !selected;
+      },
+      onPanResponderGrant: () => {
+        pan.extractOffset();
+      },
+      onPanResponderMove: Animated.event([
+        null,
+        { dx: pan.x, dy: pan.y }
+      ], { useNativeDriver: false }),
+      onPanResponderRelease: () => {
+        pan.flattenOffset();
+      },
+    })
+  ).current;
 
   const renderPopup = () => {
     if (!selected) return null;
@@ -113,7 +106,7 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
       );
     }
     
-    if (selected === 'You') {
+    if (selected === 'Selin') {
       return (
         <View style={[styles.popup, { alignSelf: 'center' }]}>
 <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setSelected(null)}>
@@ -235,72 +228,58 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
       {/* Search bar */}
       <View style={styles.searchBar}>
         <Ionicons name="search" size={18} color="#aaa"/>
-        <Text style={styles.searchPlaceholder}>Search Your Map</Text>
+        <Text style={styles.searchPlaceholder}>Search Selinr Map</Text>
         <TouchableOpacity style={styles.listViewBtn} onPress={onToggle}>
   <Text style={styles.listViewText}>List View</Text>
 </TouchableOpacity>
 
       </View>
 
-      {/* Filters */}
-      <View style={styles.filters}>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Ionicons name="filter" size={16}/><Text style={styles.filterText}>Filter</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Ionicons name="swap-vertical" size={16}/><Text style={styles.filterText}>Sort</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.locationBtn}>
-          <Ionicons name="navigate-circle-outline" size={22} color="#666"/>
-        </TouchableOpacity>
-      </View>
-
       {/* Map and nodes */}
-      <View style={styles.mapArea}>
-        <Svg style={StyleSheet.absoluteFill}>
-          {edges.map(([from, to], index) => (
-            <Line
-              key={index}
-              x1={nodes[from].x + 175}
-              y1={nodes[from].y + 175}
-              x2={nodes[to].x + 175}
-              y2={nodes[to].y + 175}
-              stroke="#F5A5B8"
-              strokeWidth="3"
-            />
-          ))}
-        </Svg>
+      <View style={styles.mapArea} {...panResponder.panHandlers}>
+        <Animated.View style={{ flex: 1, transform: [{ translateX: pan.x }, { translateY: pan.y }] }}>
+          <Svg style={StyleSheet.absoluteFill}>
+            {edges.map(([from, to], index) => (
+              <Line
+                key={index}
+                x1={nodes[from]?.x + 175}
+                y1={nodes[from]?.y + 175}
+                x2={nodes[to]?.x + 175}
+                y2={nodes[to]?.y + 175}
+                stroke="#F5A5B8"
+                strokeWidth="3"
+              />
+            ))}
+          </Svg>
 
-        {Object.entries(nodes).map(([label, node]) =>
-  node.type === 'friend' ? (
-    <FriendNode key={label} label={label} onPress={() => setSelected(label)} />
-  ) : (
-    <MediaNode key={label} label={label} onPress={() => setSelected(label)} />
-  )
-)}
+          {Object.entries(nodes).map(([label, node]) =>
+            node.type === 'friend' ? (
+              <FriendNode key={label} label={label} node={node} onPress={() => setSelected(label)} />
+            ) : (
+              <MediaNode key={label} label={label} node={node} onPress={() => setSelected(label)} />
+            )
+          )}
+        </Animated.View>
 
-
-
-<Modal
-  visible={!!selected}
-  transparent
-  animationType="fade"
-  onRequestClose={() => setSelected(null)}
->
-  <TouchableOpacity
-    activeOpacity={1}
-    onPressOut={() => setSelected(null)}
-    style={{
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.2)',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    {renderPopup()}
-  </TouchableOpacity>
-</Modal>
-
+        <Modal
+          visible={!!selected}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelected(null)}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPressOut={() => setSelected(null)}
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {renderPopup()}
+          </TouchableOpacity>
+        </Modal>
       </View>
     </View>
   );
@@ -343,13 +322,6 @@ nodeText: {
   searchPlaceholder: { flex: 1, marginLeft: 5, color: '#aaa' },
   listViewBtn: { padding: 5, borderWidth: 1, borderColor: '#ccc', borderRadius: 15 },
   listViewText: { color: '#888' },
-  filters: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 6 },
-  filterBtn: {
-    flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 5,
-    borderRadius: 15, borderWidth: 1, borderColor: '#ccc', alignItems: 'center'
-  },
-  filterText: { marginLeft: 4, color: '#555' },
-  locationBtn: { marginLeft: 'auto' },
   mapArea: {
     flex: 1,
     position: 'relative',

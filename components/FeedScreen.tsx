@@ -1,8 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Modal } from 'react-native';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
+  // Filter and sort state
+  const [filter, setFilter] = useState<'All' | 'Book' | 'Movie' | 'Album' | 'TV Show'>('All');
+  const [sortAsc, setSortAsc] = useState(true);
+  const [filterModal, setFilterModal] = useState(false);
+
+  // Feed data (static for now, could be dynamic)
+  const feed = [
+    {
+      user: 'Gus', type: 'TV Show', title: 'The Big Bang Theory',
+      subtitle: '2007 • Sitcom • 12 seasons', notes: 'Loved the witty humor!',
+      image: require('../assets/images/media/bigbang.png'), profile: require('../assets/images/profile/gus.png'), rating: 7.6, time: '2h', color: undefined
+    },
+    {
+      user: 'You', type: 'Album', title: '1989',
+      subtitle: 'Taylor Swift • 2014 • Album • 13 songs', notes: 'meh',
+      image: require('../assets/images/media/1989.png'), profile: require('../assets/images/profile/selin.png'), rating: 5.3, time: '3d', color: '#F8797E'
+    },
+    {
+      user: 'Anant', type: 'Book', title: 'Grit',
+      subtitle: 'Angela Duckworth • 2016 • Book • 352 pages', notes: 'An uplifting premise that sometimes feels repetitive.',
+      image: require('../assets/images/media/grit.png'), profile: require('../assets/images/profile/anant.png'), rating: 2.9, time: '1w', color: '#F8797E'
+    },
+    {
+      user: 'Anant', type: 'Movie', title: 'Interstellar',
+      subtitle: 'Christopher Nolan • 2014 • Sci-Fi • 2h 49m', notes: 'Awesome movie! Loved Matthew MccCounaughey in this',
+      image: require('../assets/images/media/interstellar.png'), profile: require('../assets/images/profile/anant.png'), rating: 2.9, time: '1w', color: '#F8797E'
+    },
+    {
+      user: 'You', type: 'Book', title: 'Grit',
+      subtitle: 'Angela Duckworth • 2016 • Book • 352 pages', notes: 'I got bored, couldn\'t finish',
+      image: require('../assets/images/media/grit.png'), profile: require('../assets/images/profile/selin.png'), rating: 1.5, time: '2w', color: '#F8797E'
+    },
+    {
+      user: 'Gus', type: 'Album', title: '1989',
+      subtitle: 'Taylor Swift • 2014 • Album • 13 songs', notes: 'So danceable! Loving Taylor these days',
+      image: require('../assets/images/media/1989.png'), profile: require('../assets/images/profile/gus.png'), rating: 7.6, time: '2w', color: undefined
+    },
+  ];
+
+  // Filter and sort logic
+  let filtered = feed.filter(item => filter === 'All' || item.type === filter);
+  filtered = filtered.sort((a, b) => sortAsc ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title));
 
   return (
     <ScrollView style={styles.container}>
@@ -17,157 +60,68 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
       </View>
 
       <View style={styles.filters}>
-        <TouchableOpacity style={styles.filterBtn}>
+        <TouchableOpacity style={styles.filterBtn} onPress={() => setFilterModal(true)}>
           <Ionicons name="filter" size={16} />
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Ionicons name="swap-vertical" size={16} />
+        <TouchableOpacity style={styles.filterBtn} onPress={() => setSortAsc(s => !s)}>
+          <Ionicons name={sortAsc ? 'arrow-down' : 'arrow-up'} size={16} />
           <Text style={styles.filterText}>Sort</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-        <Image source={require('../assets/images/profile/gus.png')} style={styles.profileImg} />
-          <Text style={styles.headerText}><Text style={styles.bold}>Gus</Text> ranked TV</Text>
-          <Text style={styles.timestamp}>2h</Text>
-        </View>
-        <View style={styles.cardBody}>
-          <Image source={require('../assets/images/media/bigbang.png')} style={styles.mediaImage}/>
-          <View style={styles.mediaContent}>
-            <Text style={styles.title}>The Big Bang Theory</Text>
-            <Text style={styles.subtitle}>2007 • Sitcom • 12 seasons</Text>
-            <Text style={styles.notes}>Notes: "Loved the witty humor!"</Text>
-            <TouchableOpacity style={styles.wantBtn}>
-              <Text style={styles.wantBtnText}>Want to Watch</Text>
-            </TouchableOpacity>
+      <Modal
+        visible={filterModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setFilterModal(false)}
+      >
+        <TouchableOpacity
+          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}
+          activeOpacity={1}
+          onPressOut={() => setFilterModal(false)}
+        >
+          <View style={{ backgroundColor: '#fff', borderRadius: 12, padding: 20, minWidth: 200 }}>
+            {['All', 'Book', 'Movie', 'Album', 'TV Show'].map(f => (
+              <TouchableOpacity
+                key={f}
+                style={{ paddingVertical: 10, alignItems: 'center', backgroundColor: filter === f ? '#FF6B6B' : 'transparent', borderRadius: 8, marginBottom: 4 }}
+                onPress={() => { setFilter(f as any); setFilterModal(false); }}
+              >
+                <Text style={{ color: filter === f ? '#fff' : '#333', fontWeight: filter === f ? 'bold' : 'normal' }}>{f}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
-          <View style={styles.ratingCircle}><Text style={styles.rating}>7.6</Text></View>
-        </View>
-        <View style={styles.interaction}>
-          <Ionicons name="heart-outline" size={18}/><Text>1</Text>
-          <Ionicons name="chatbubble-outline" size={18}/><Text>3</Text>
-          <Ionicons name="send-outline" size={18}/>
-        </View>
-      </View>
+        </TouchableOpacity>
+      </Modal>
 
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-        <Image source={require('../assets/images/profile/selin.png')} style={styles.profileImg} />
-          <Text style={styles.headerText}><Text style={styles.bold}>You</Text> ranked album</Text>
-          <Text style={styles.timestamp}>3d</Text>
-        </View>
-        <View style={styles.cardBody}>
-          <Image source={require('../assets/images/media/1989.png')} style={styles.mediaImage}/>
-          <View style={styles.mediaContent}>
-            <Text style={styles.title}>1989</Text>
-            <Text style={styles.subtitle}>Taylor Swift • 2014 • Album • 13 songs</Text>
-            <Text style={styles.notes}>Notes: "meh"</Text>
+      {filtered.map((item, i) => (
+        <View style={styles.card} key={i}>
+          <View style={styles.cardHeader}>
+            <Image source={item.profile} style={styles.profileImg} />
+            <Text style={styles.headerText}><Text style={styles.bold}>{item.user}</Text> ranked {item.type.toLowerCase()}</Text>
+            <Text style={styles.timestamp}>{item.time}</Text>
           </View>
-          <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>5.3</Text></View>
-        </View>
-        <View style={styles.interaction}>
-          <FontAwesome name="heart" color="#F8797E" size={18}/><Text>2</Text>
-          <Ionicons name="chatbubble-outline" size={18}/><Text>1</Text>
-          <Ionicons name="send-outline" size={18}/>
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-        <Image source={require('../assets/images/profile/anant.png')} style={styles.profileImg} />
-
-          <Text style={styles.headerText}><Text style={styles.bold}>Anant</Text> ranked book</Text>
-          <Text style={styles.timestamp}>1w</Text>
-        </View>
-        <View style={styles.cardBody}>
-          <Image source={require('../assets/images/media/grit.png')} style={styles.mediaImage}/>
-          <View style={styles.mediaContent}>
-            <Text style={styles.title}>Grit</Text>
-            <Text style={styles.subtitle}>Angela Duckworth • 2016 • Book • 352 pages</Text>
-            <Text style={styles.notes}>Notes: "An uplifting premise that sometimes feels repetitive."</Text>
+          <View style={styles.cardBody}>
+            <Image source={item.image} style={styles.mediaImage}/>
+            <View style={styles.mediaContent}>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.subtitle}>{item.subtitle}</Text>
+              <Text style={styles.notes}>Notes: "{item.notes}"</Text>
+              {item.type === 'Movie' || item.type === 'TV Show' ? (
+                <TouchableOpacity style={styles.wantBtn}>
+                  <Text style={styles.wantBtnText}>Want to Watch</Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
+            <View style={[styles.ratingCircle, item.color ? {borderColor: item.color} : null]}><Text style={[styles.rating, item.color ? {color: item.color} : null]}>{item.rating}</Text></View>
           </View>
-          <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>2.9</Text></View>
-        </View>
-        <View style={styles.interaction}>
-          <Ionicons name="heart-outline" size={18}/><Text>0</Text>
-          <Ionicons name="chatbubble-outline" size={18}/><Text>0</Text>
-          <Ionicons name="send-outline" size={18}/>
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-        <Image source={require('../assets/images/profile/anant.png')} style={styles.profileImg} />
-
-          <Text style={styles.headerText}><Text style={styles.bold}>Anant</Text> ranked movie</Text>
-          <Text style={styles.timestamp}>1w</Text>
-        </View>
-        <View style={styles.cardBody}>
-          <Image source={require('../assets/images/media/interstellar.png')} style={styles.mediaImage}/>
-          <View style={styles.mediaContent}>
-            <Text style={styles.title}>Interstellar</Text>
-            <Text style={styles.subtitle}>Christopher Nolan • 2014 • Sci-Fi • 2h 49m</Text>
-            <Text style={styles.notes}>Notes: "Awesome movie! Loved Matthew MccCounaughey in this"</Text>
-            <TouchableOpacity style={styles.wantBtn}>
-              <Text style={styles.wantBtnText}>Want to Watch</Text>
-            </TouchableOpacity>
+          <View style={styles.interaction}>
+            <Ionicons name="heart-outline" size={18}/><Text>1</Text>
+            <Ionicons name="chatbubble-outline" size={18}/><Text>3</Text>
+            <Ionicons name="send-outline" size={18}/>
           </View>
-          <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>2.9</Text></View>
         </View>
-        <View style={styles.interaction}>
-          <Ionicons name="heart-outline" size={18}/><Text>0</Text>
-          <Ionicons name="chatbubble-outline" size={18}/><Text>0</Text>
-          <Ionicons name="send-outline" size={18}/>
-        </View>
-      </View>
-
-
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-        <Image source={require('../assets/images/profile/selin.png')} style={styles.profileImg} />
-          <Text style={styles.headerText}><Text style={styles.bold}>You</Text> ranked book</Text>
-          <Text style={styles.timestamp}>2w</Text>
-        </View>
-        <View style={styles.cardBody}>
-          <Image source={require('../assets/images/media/grit.png')} style={styles.mediaImage}/>
-          <View style={styles.mediaContent}>
-            <Text style={styles.title}>Grit</Text>
-            <Text style={styles.subtitle}>Angela Duckworth • 2016 • Book • 352 pages</Text>
-            <Text style={styles.notes}>Notes: "I got bored, couldn't finish"</Text>
-
-          </View>
-          <View style={[styles.ratingCircle,{borderColor:'#F8797E'}]}><Text style={[styles.rating,{color:'#F8797E'}]}>1.5</Text></View>
-        </View>
-        <View style={styles.interaction}>
-          <FontAwesome name="heart" color="#F8797E" size={18}/><Text>2</Text>
-          <Ionicons name="chatbubble-outline" size={18}/><Text>1</Text>
-          <Ionicons name="send-outline" size={18}/>
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-        <Image source={require('../assets/images/profile/gus.png')} style={styles.profileImg} />
-          <Text style={styles.headerText}><Text style={styles.bold}>Gus</Text> ranked album</Text>
-          <Text style={styles.timestamp}>2w</Text>
-        </View>
-        <View style={styles.cardBody}>
-          <Image source={require('../assets/images/media/1989.png')} style={styles.mediaImage}/>
-          <View style={styles.mediaContent}>
-            <Text style={styles.title}>1989</Text>
-            <Text style={styles.subtitle}>Taylor Swift • 2014 • Album • 13 songs</Text>
-            <Text style={styles.notes}>Notes: "So danceable! Loving Taylor these days"</Text>
-          </View>
-          <View style={styles.ratingCircle}><Text style={styles.rating}>7.6</Text></View>
-        </View>
-        <View style={styles.interaction}>
-          <Ionicons name="heart-outline" size={18}/><Text>1</Text>
-          <Ionicons name="chatbubble-outline" size={18}/><Text>3</Text>
-          <Ionicons name="send-outline" size={18}/>
-        </View>
-      </View>
+      ))}
 
     </ScrollView>
   );

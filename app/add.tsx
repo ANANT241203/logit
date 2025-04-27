@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Switch, Platform } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useMap } from '../components/MapContext';
 
 
 export default function AddScreen({ }) {
@@ -16,6 +17,7 @@ export default function AddScreen({ }) {
   const [stars, setStars] = useState(0);
   const [showPicker, setShowPicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { addNode, addEdge } = useMap();
 
 
   const handleSearch = () => {
@@ -23,7 +25,25 @@ export default function AddScreen({ }) {
   };
 
   const handleDone = () => {
-    console.log('Added item:', { title, by, type });
+    if (title && type) {
+      const y = Math.random() * 200 + 120;
+      const x = Math.random() * 200 - 100;
+      let color = '#4DDEFF';
+      let nodeType: 'media' | 'friend' = 'media';
+      let iconType: 'media' | 'book' | 'music' = 'media';
+      if (type === 'Book') {
+        color = '#FFA600';
+        iconType = 'book';
+      } else if (type === 'Movie' || type === 'TV Show') {
+        color = '#00D62E';
+        iconType = 'media';
+      } else if (type === 'Album') {
+        color = '#4DDEFF';
+        iconType = 'music';
+      }
+      addNode(title, { x, y, color, type: nodeType, iconType });
+      addEdge('Selin', title);
+    }
     setModalVisible(true);
   };
 
