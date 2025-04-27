@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from 'react-native';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
@@ -8,6 +8,7 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
   const [filter, setFilter] = useState<'All' | 'Book' | 'Movie' | 'Album' | 'TV Show'>('All');
   const [sortAsc, setSortAsc] = useState(true);
   const [filterModal, setFilterModal] = useState(false);
+  const [search, setSearch] = useState('');
 
   // Feed data (static for now, could be dynamic)
   const feed = [
@@ -17,7 +18,7 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
       image: require('../assets/images/media/bigbang.png'), profile: require('../assets/images/profile/gus.png'), rating: 7.6, time: '2h', color: undefined
     },
     {
-      user: 'You', type: 'Album', title: '1989',
+      user: 'Selin', type: 'Album', title: '1989',
       subtitle: 'Taylor Swift • 2014 • Album • 13 songs', notes: 'meh',
       image: require('../assets/images/media/1989.png'), profile: require('../assets/images/profile/selin.png'), rating: 5.3, time: '3d', color: '#F8797E'
     },
@@ -32,7 +33,7 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
       image: require('../assets/images/media/interstellar.png'), profile: require('../assets/images/profile/anant.png'), rating: 2.9, time: '1w', color: '#F8797E'
     },
     {
-      user: 'You', type: 'Book', title: 'Grit',
+      user: 'Selin', type: 'Book', title: 'Grit',
       subtitle: 'Angela Duckworth • 2016 • Book • 352 pages', notes: 'I got bored, couldn\'t finish',
       image: require('../assets/images/media/grit.png'), profile: require('../assets/images/profile/selin.png'), rating: 1.5, time: '2w', color: '#F8797E'
     },
@@ -43,8 +44,11 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
     },
   ];
 
-  // Filter and sort logic
-  let filtered = feed.filter(item => filter === 'All' || item.type === filter);
+  // Filter, search, and sort logic
+  let filtered = feed.filter(item =>
+    (filter === 'All' || item.type === filter) &&
+    (search.trim() === '' || item.title.toLowerCase().includes(search.trim().toLowerCase()) || item.user.toLowerCase().includes(search.trim().toLowerCase()))
+  );
   filtered = filtered.sort((a, b) => sortAsc ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title));
 
   return (
@@ -52,11 +56,20 @@ const FeedScreen = ({ onToggle }: { onToggle: () => void }) => {
       
       <View style={styles.searchBar}>
         <Ionicons name="search" size={18} color="#aaa"/>
-        <Text style={styles.searchPlaceholder}>Search Your Feed</Text>
+        <Text
+          style={styles.searchPlaceholder}
+        >
+        </Text>
         <TouchableOpacity style={styles.mapViewBtn} onPress={onToggle}>
-  <Text style={styles.mapViewText}>Map View</Text>
-</TouchableOpacity>
-
+          <Text style={styles.mapViewText}>Map View</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={{ position: 'absolute', left: 35, right: 110, color: '#333', height: 40 }}
+          placeholder="Search by title or user"
+          placeholderTextColor="#aaa"
+          value={search}
+          onChangeText={setSearch}
+        />
       </View>
 
       <View style={styles.filters}>
