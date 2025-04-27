@@ -225,14 +225,11 @@ export default function MapScreen({ onToggle }: { onToggle: () => void }) {
 
   return (
     <View style={styles.container}>
-      {/* Search bar */}
-      <View style={styles.searchBar}>
-        <Ionicons name="search" size={18} color="#aaa"/>
-        <Text style={styles.searchPlaceholder}>Search Selinr Map</Text>
+      {/* List View Button in Top Right */}
+      <View style={{ position: 'absolute', top: 15, right: 15, zIndex: 10 }}>
         <TouchableOpacity style={styles.listViewBtn} onPress={onToggle}>
-  <Text style={styles.listViewText}>List View</Text>
-</TouchableOpacity>
-
+          <Text style={styles.listViewText}>List View</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Map and nodes */}
