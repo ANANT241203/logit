@@ -11,7 +11,7 @@ import { useMap } from './MapContext';
 
 
 const FriendNode = ({ label, onPress, node }: { label: string; onPress: () => void; node: any }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: node.y, left: node.x }]}> 
+  <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: node.y - 135, left: node.x }]}> 
     <Image source={profileIcon} style={styles.iconImage} />
     <Text style={styles.friendNodeText}>{label}</Text>
   </TouchableOpacity>
@@ -27,7 +27,7 @@ const MediaNode = ({ label, onPress, node }: { label: string; onPress: () => voi
   const isMovieOrShow = node.iconType === 'media' || label === 'The Big Bang Theory' || label === 'Interstellar';
   const isDisk = node.iconType === 'music' || label === '1989';
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: node.y, left: node.x }]}> 
+    <TouchableOpacity onPress={onPress} style={[styles.nodeWrapper, { top: node.y - 135, left: node.x }]}> 
       <Image
         source={icon}
         style={[
