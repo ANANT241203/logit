@@ -74,7 +74,7 @@ export default function AddScreen({ }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <View style={styles.searchBar}>
+      {/* <View style={styles.searchBar}>
         <Ionicons name="search" size={18} color="#aaa" />
         <TextInput
           placeholder="Find Title"
@@ -86,7 +86,7 @@ export default function AddScreen({ }) {
         <TouchableOpacity style={styles.mapViewBtn} onPress={handleSearch}>
           <Text style={styles.mapViewText}>Search</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
 
       <View style={styles.buttonContainer}>
