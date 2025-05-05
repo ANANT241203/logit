@@ -1,4 +1,4 @@
-// profile.tsx
+// app/profile.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -14,11 +14,12 @@ import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 // ----------------------------------------------------------------------------
-// Standard header constants
-const HEADER_HEIGHT = height * 1;
-const PANEL_OFFSET   = HEADER_HEIGHT - 620;
+// SHORTER HEADER: 25% of screen height
+const HEADER_HEIGHT = height * 0.25;
+// PUSH WHITE PANEL a bit further down under header
+const PANEL_OFFSET   = HEADER_HEIGHT;
 // ----------------------------------------------------------------------------
-// Grid sizing for Ratings
+// Grid sizing for Ratings (4 per row with side margins)
 const GRID_ITEM_SIZE = (width - 80) / 4;
 
 type MediaType = 'Books' | 'Movie' | 'TV' | 'Music';
@@ -55,7 +56,7 @@ const TYPE_ICONS: Record<MediaType, string> = {
   Music: 'musical-notes',
 };
 
-// Sample data
+// Sample data for Ratings
 const RATED_ITEMS: RatedItem[] = [
   { id: '1', title: 'Song of Solomon',   type: 'Books', stars: 5 },
   { id: '2', title: 'The Substance',      type: 'Movie', stars: 4 },
@@ -66,6 +67,8 @@ const RATED_ITEMS: RatedItem[] = [
   { id: '7', title: 'Friends S1',         type: 'TV',    stars: 4 },
   { id: '8', title: '1989',               type: 'Music', stars: 5 },
 ];
+
+// Sample data for Liked
 const LIKED_ITEMS: LikedItem[] = [
   { id: 'l1', title: 'The Hobbit',     type: 'Books', likedFrom: 'Anant' },
   { id: 'l2', title: 'Dune',           type: 'Books', likedFrom: 'Gus' },
@@ -74,6 +77,8 @@ const LIKED_ITEMS: LikedItem[] = [
   { id: 'l5', title: 'Breaking Bad',   type: 'TV',    likedFrom: 'Anant' },
   { id: 'l6', title: 'Abbey Road',     type: 'Music', likedFrom: 'Gus' },
 ];
+
+// Sample data for Playlists
 const PLAYLISTS: PlaylistItem[] = [
   {
     id: 'p1',
@@ -153,13 +158,17 @@ export default function ProfileScreen() {
           >
             <Ionicons name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
-          <Text style={[styles.name, { marginTop: 8 }]}>{activePlaylist.title}</Text>
-          <Text style={styles.subtitle}>By {activePlaylist.creator}</Text>
+          <Text style={[styles.name, { marginTop: 8 }]}>
+            {activePlaylist.title}
+          </Text>
+          <Text style={styles.subtitle}>
+            By {activePlaylist.creator}
+          </Text>
         </LinearGradient>
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingTop: PANEL_OFFSET - 150 }}
+          contentContainerStyle={{ paddingTop: PANEL_OFFSET }}
         >
           <View style={styles.content}>
             {activePlaylist.contents.map((m, i) => (
@@ -238,7 +247,7 @@ export default function ProfileScreen() {
             ))}
           </View>
 
-          {/* Filters */}
+          {/* Filters for Ratings & Liked */}
           {(section === 'Ratings' || section === 'Liked') && (
             <View style={styles.filterBar}>
               {(['All','Books','Movie','TV','Music'] as const).map(f => (
@@ -263,7 +272,7 @@ export default function ProfileScreen() {
             </View>
           )}
 
-          {/* Ratings */}
+          {/* Ratings Grid */}
           {section === 'Ratings' && (
             <View style={styles.grid}>
               {filteredRated.map(item => (
@@ -283,7 +292,12 @@ export default function ProfileScreen() {
                   <Text style={styles.mediaLabel}>{item.title}</Text>
                   <View style={styles.starsRow}>
                     {Array.from({ length: item.stars }).map((_, i) => (
-                      <FontAwesome key={i} name="star" size={12} color="#FFD700"/>
+                      <FontAwesome
+                        key={i}
+                        name="star"
+                        size={12}
+                        color="#FFD700"
+                      />
                     ))}
                   </View>
                 </View>
@@ -291,7 +305,7 @@ export default function ProfileScreen() {
             </View>
           )}
 
-          {/* Liked */}
+          {/* Liked List */}
           {section === 'Liked' && (
             <View style={styles.list}>
               {filteredLiked.map(item => (
@@ -309,13 +323,15 @@ export default function ProfileScreen() {
                     />
                   </View>
                   <Text style={styles.listTitle}>{item.title}</Text>
-                  <Text style={styles.likedFrom}>Liked from {item.likedFrom}</Text>
+                  <Text style={styles.likedFrom}>
+                    Liked from {item.likedFrom}
+                  </Text>
                 </View>
               ))}
             </View>
           )}
 
-          {/* Playlists */}
+          {/* Playlists Overview */}
           {section === 'Playlists' && (
             <View style={styles.playlistList}>
               {PLAYLISTS.map(pl => (
@@ -343,9 +359,15 @@ export default function ProfileScreen() {
                   </View>
                   <View style={styles.playlistText}>
                     <Text style={styles.playlistTitle}>{pl.title}</Text>
-                    <Text style={styles.playlistCreator}>By {pl.creator}</Text>
+                    <Text style={styles.playlistCreator}>
+                      By {pl.creator}
+                    </Text>
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color="#ccc"/>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={20}
+                    color="#ccc"
+                  />
                 </TouchableOpacity>
               ))}
             </View>
@@ -372,8 +394,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 50,
-    left: 20,
+    top: 40,
+    left: 16,
     zIndex: 2,
     padding: 8,
   },
@@ -384,22 +406,34 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#fff',
     marginBottom: 8,
-    marginTop: 8,
   },
-  name: { fontSize: 24, fontWeight: '700', color: '#fff', marginTop: 4 },
-  subtitle: { fontSize: 14, color: '#ffe4e0', marginTop: 2 },
-  statsRow: { flexDirection: 'row', marginTop: 6, alignItems: 'center' },
+  name: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#fff',
+    marginTop: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#ffe4e0',
+    marginTop: 2,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    marginTop: 6,
+    alignItems: 'center',
+  },
   statButton: { alignItems: 'center', paddingHorizontal: 12 },
   statValue: { fontSize: 16, fontWeight: '600', color: '#fff' },
   statLabel: { fontSize: 12, color: '#ffe4e0' },
   statDivider: { width: 1, height: 20, backgroundColor: '#ffb3a0' },
 
-  scroll: { flex: 1, zIndex: 2 },
+  scroll: { flex: 1 },
   content: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingTop: 24,
+    paddingTop: 12,
     paddingBottom: 40,
     minHeight: height,
   },
@@ -469,78 +503,82 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
-    justifyContent:'center',
-    alignItems:'center',
-    marginRight:12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   listTitle: {
-    flex:1,
-    fontSize:16,
-    fontWeight:'600',
-    color:'#333',
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
   likedFrom: {
-    fontSize:13,
-    color:'#666',
-    marginLeft:8,
+    fontSize: 13,
+    color: '#666',
+    marginLeft: 8,
   },
 
   playlistList: { marginHorizontal: 16 },
   playlistCard: {
-    flexDirection:'row',
-    alignItems:'center',
-    padding:12,
-    marginVertical:8,
-    backgroundColor:'#fff',
-    borderRadius:12,
-    shadowColor:'#000',
-    shadowOpacity:0.05,
-    shadowRadius:5,
-    elevation:2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    marginVertical: 8,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
   },
   collage: {
     width: COLLAGE_SIZE,
     height: COLLAGE_SIZE,
-    flexDirection:'row',
-    flexWrap:'wrap',
-    marginRight:12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginRight: 12,
   },
   collageItem: {
     width: COLLAGE_ITEM_SIZE,
     height: COLLAGE_ITEM_SIZE,
-    borderRadius:4,
-    margin:1,
-    justifyContent:'center',
-    alignItems:'center',
+    borderRadius: 4,
+    margin: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  playlistText: { flex:1 },
+  playlistText: { flex: 1 },
   playlistTitle: {
-    fontSize:16, fontWeight:'600', color:'#333',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
   playlistCreator: {
-    fontSize:13, color:'#666', marginTop:2,
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
   },
 
   detailItem: {
-    flexDirection:'row',
-    alignItems:'center',
-    paddingVertical:12,
-    paddingHorizontal:16,
-    borderBottomWidth:StyleSheet.hairlineWidth,
-    borderColor:'#eee',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#eee',
   },
   detailIcon: {
-    width:40,
-    height:40,
-    borderRadius:8,
-    justifyContent:'center',
-    alignItems:'center',
-    marginRight:12,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   detailLabel: {
-    flex:1,
-    fontSize:16,
-    fontWeight:'600',
-    color:'#333',
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
 });
